@@ -42,8 +42,8 @@ class Config:
         self.huber_loss_threshold = 1.0
 
         # Expetile ER-DQN parameters
-        self.num_expectiles = 10
-        self.z_val_limits = (0, 10)
+        self.num_expectiles = 10 # NOTE instead of 11 as in the original paper 
+        self.z_val_limits = (0, 10) # NOTE change depending on the environment?
         self.num_imputed_samples = 10
         self.imputation_distribution_bounds = tuple(self.z_val_limits for _ in range(self.num_imputed_samples))
         self.imputation_method = "root"  # root or minimization
@@ -59,3 +59,9 @@ class Config:
 
         # a2c parameters
         self.head_out_dim = 20
+
+        # Laplace Code parameters
+        self.num_gamma = 50
+        self.num_sensitivities = 10
+        self.learning_rate = 0.1  # not using neural networks for now
+        self.alpha = 1 # Regularization parameter for SVD-based Discrete Linear Decoder

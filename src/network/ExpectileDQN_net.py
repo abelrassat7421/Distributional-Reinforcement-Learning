@@ -11,7 +11,7 @@ class ExpectileNet:
         self.input_dim = config.input_dim
         self.action_dim = config.action_dim
         self.num_expectiles = config.num_expectiles
-        self.output_dim = self.action_dim * self.num_expectiles
+        self.output_dim = self.action_dim * self.num_expectiles # TODO this must mean that only one state (or minibatch) is given input and returns expectiles for every action that can be taken at that state
         self.expectile_mean_idx = int(config.num_expectiles / 2)
 
         self.batch_size = self.config.batch_size
@@ -20,12 +20,12 @@ class ExpectileNet:
         self.net_model = None
 
         # note that middle expectile statistic is in fact the mean, i.e. tau_{middle}
-        self.cum_density = tf.linspace(0.01, 0.99, config.num_expectiles)
+        self.cum_density = tf.linspace(0.01, 0.99, config.num_expectiles) # NOTE as in the original paper 
 
     def nn_model(self):
         input_layer = Input(shape=self.input_dim, name='state_tensor_input')
         output_layers = Dense(units=24, activation="relu", name='hidden_layer_1')(input_layer)
-        output_layers = Dense(units=self.output_dim, activation="linear", name='output_layer')(output_layers)
+        output_layers = Dense(units=self.output_dim, activation="linear", name='output_layer')(output_layers) # TODO understand how the two output layers don't overwrite eachother
 
         # processing layers ==> reshape, no training variables
         output_layers = Reshape((self.action_dim, self.num_expectiles))(output_layers)

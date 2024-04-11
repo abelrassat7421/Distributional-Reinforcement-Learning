@@ -20,7 +20,7 @@ class ExpectileDQNAgent:
 
         self.envs = None
         self.actor_network = self.base_network.nn_model()
-        self.target_network = tf.keras.models.clone_model(self.actor_network)
+        self.target_network = tf.keras.models.clone_model(self.actor_network) 
         self.target_network.set_weights(self.actor_network.get_weights())
 
         self.total_steps = 0
@@ -36,20 +36,20 @@ class ExpectileDQNAgent:
         self.check_model_improved = 0
         self.best_max = 0
         # note that tau_6 = 0.5 and thus this expectile statistic is in fact the mean
-        # tau
+        # tau NOTE (because 11 expectiles are used as in the original paper)  
         self.cum_density = np.linspace(0.01, 0.99, config.num_expectiles)
         self.imputation_method = config.imputation_method
 
     def transition(self):
         """
-        In transition, the agent simply plays and record
+        In transition, the agent simply plays and records
         [current_state, action, reward, next_state, done]
         in the replay_buffer (or memory pool)
 
         Updating the weights of the neural network happens
         every single time the replay buffer size is reached.
 
-        done: boolean, whether the game has end or not.
+        done: boolean, whether the game has ended or not.
         """
         for each_ep in range(self.episodes):
             current_state = self.envs.reset()
@@ -59,11 +59,11 @@ class ExpectileDQNAgent:
             self.check_model_improved = 0
 
             for step in range(self.steps):
-                # neural network returns quantile value
+                # neural network returns expectile value
                 # action value (Q): middle of all expectile values
                 expectile_values, _ = self.actor_network.predict(
                     np.array(current_state).reshape((1, self.input_dim[0], self.input_dim[1])))
-                action_value = expectile_values[0, :, self.expectile_mean_idx]
+                action_value = expectile_values[0, :, self.expectile_mean_idx] # TODO check if the second dimension is for all action, the third is for the different expectiles, first dim is batch size?
 
                 # choose action according to the E-greedy policy
                 action = policies.epsilon_greedy(action_values=action_value[0],
@@ -87,7 +87,7 @@ class ExpectileDQNAgent:
                 # if episode is finished, break the inner loop
                 # otherwise, continue
                 if done:
-                    self.total_steps += 1
+                    self.total_steps += 1 # NOTE one step is one finished episode
                     break
                 else:
                     current_state = next_state
@@ -110,13 +110,13 @@ class ExpectileDQNAgent:
             replay_fn.uniform_random_replay(self.replay_buffer, self.batch_size)
 
         # step 2: get the next state expectiles
-        # and choose the optimal actions from next state quantiles
+        # and choose the optimal actions from next state expectiles
         expectile_next, _ = self.target_network.predict(next_states)
 
         # different from the quantile approach, in which the q values are calculated by mean over quantiles
         # in expectile approach, the middle expectile value is the mean (i.e. the action value)
         action_value_next = expectile_next[:, :, self.expectile_mean_idx]
-        action_next = np.argmax(action_value_next, axis=1)
+        action_next = np.argmax(action_value_next, axis=1) # TODO what are we taking an argmax over -> check dimensions
 
         # choose the optimal expectile next
         expectile_next = expectile_next[np.arange(self.batch_size), action_next, :]
