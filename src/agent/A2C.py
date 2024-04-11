@@ -42,7 +42,7 @@ class A2Cagent:
         done: boolean, whether the game has end or not.
         """
         for each_ep in range(self.episodes):
-            current_state = self.envs.reset()
+            current_state = self.envs.reset()[0] # Update of gym package
 
             print('Episode: {} Reward: {} Max_Reward: {}'.format(each_ep, self.check_model_improved, self.best_max))
             print('-' * 64)
@@ -58,7 +58,7 @@ class A2Cagent:
                                                  stop_explore=self.config.stop_explore,
                                                  total_actions=self.config.action_dim)
 
-                next_state, reward, done, _ = self.envs.step(action=action)
+                next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
                 returns = self.config.discount_rate * reward  # calculate returns/discounted rewards
 
                 # record the per step history into replay buffer
@@ -109,7 +109,7 @@ class A2Cagent:
         :param render: whether to visualize the evaluation or not
         """
         for each_ep in range(self.config.evaluate_episodes):
-            current_state = self.envs.reset()
+            current_state = self.envs.reset()[0] # Update of gym package
 
             print('Episode: {}  eward: {} Training_Max_Reward: {}'.format(each_ep, self.check_model_improved,
                                                                           self.best_max))
@@ -121,7 +121,7 @@ class A2Cagent:
                     np.array(current_state).reshape((1, self.input_dim[0], self.input_dim[1])))
                 action = np.argmax(action_values.reshape(self.config.action_dim))
 
-                next_state, reward, done, _ = self.envs.step(action=action)
+                next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
 
                 if render:
                     self.envs.render(mode=['human'])

@@ -43,7 +43,7 @@ class DQNAgent:
         done: boolean, whether the game has end or not.
         """
         for each_ep in range(self.episodes):
-            current_state = self.envs.reset()
+            current_state = self.envs.reset()[0] # Update of gym package
 
             print('Episode: {} Reward: {} Max_Reward: {}'.format(each_ep, self.check_model_improved, self.best_max))
             print('-' * 64)
@@ -60,7 +60,7 @@ class DQNAgent:
                                                  stop_explore=self.config.stop_explore,
                                                  total_actions=self.config.action_dim)
 
-                next_state, reward, done, _ = self.envs.step(action=action)
+                next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
 
                 # record the per step history into replay buffer
                 self.replay_buffer.append([current_state.reshape(self.input_dim).tolist(), action,
@@ -117,7 +117,7 @@ class DQNAgent:
         :param render: whether to visualize the evaluation or not
         """
         for each_ep in range(self.config.evaluate_episodes):
-            current_state = self.envs.reset()
+            current_state = self.envs.reset()[0] # Update of gym package
 
             print('Episode: {} Reward: {} Training_Max_Reward: {}'.format(each_ep, self.check_model_improved,
                                                                           self.best_max))
@@ -129,7 +129,7 @@ class DQNAgent:
                     np.array(current_state).reshape((1, self.input_dim[0], self.input_dim[1])))
                 action = np.argmax(action_values.reshape(self.config.action_dim))
 
-                next_state, reward, done, _ = self.envs.step(action=action)
+                next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
 
                 if render:
                     self.envs.render(mode=['human'])

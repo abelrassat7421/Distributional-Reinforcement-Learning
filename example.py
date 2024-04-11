@@ -19,7 +19,7 @@ def run_CategoricalDQN_example(game):
     C = config.Config()
     base_network = CategoricalDQN_net.CategoricalNet(config=C)
     cat = CategoricalDQNAgent(config=C, base_network=base_network)
-    cat.envs = gym.make(game)
+    cat.envs = gym.make(game, render_mode="human")
 
     cat.transition()
     print("finish training")
@@ -70,8 +70,8 @@ def run_A2C_example(game):
 if __name__ == '__main__':
     game = 'CartPole-v0'
 
-    run_DQN_example(game)
-    # run_CategoricalDQN_example(game)
+    # run_DQN_example(game)
+    run_CategoricalDQN_example(game)
     # run_QuantileDQN_example(game)
     # run_ExpectileDQN_example(game)
     # run_A2C_example(game)
