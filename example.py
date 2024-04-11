@@ -6,7 +6,7 @@ def run_DQN_example(game):
     C = config.Config()
     base_network = DQN_net.DQNNet(config=C)
     cat = DQNAgent(config=C, base_network=base_network)
-    cat.envs = gym.make(game)
+    cat.envs = gym.make(game, render_mode="human")
 
     cat.transition()
     print("finish training")
@@ -32,7 +32,7 @@ def run_QuantileDQN_example(game):
     C = config.Config()
     base_network = QuantileDQN_net.QuantileNet(config=C)
     Quant = QuantileDQNAgent(config=C, base_network=base_network)
-    Quant.envs = gym.make(game)
+    Quant.envs = gym.make(game, render_mode="human")
 
     Quant.transition()
     print("finish training")
@@ -45,7 +45,7 @@ def run_ExpectileDQN_example(game):
     C = config.Config()
     base_network = ExpectileDQN_net.ExpectileNet(config=C)
     expect = ExpectileDQNAgent(config=C, base_network=base_network)
-    expect.envs = gym.make(game)
+    expect.envs = gym.make(game, render_mode="human")
 
     expect.transition()
     print("finish training")
@@ -58,7 +58,7 @@ def run_A2C_example(game):
     C = config.Config()
     base_network = A2C_net.ActorCriticNet(config=C)
     A2C = A2Cagent(config=C, base_network=base_network)
-    A2C.envs = gym.make(game)
+    A2C.envs = gym.make(game, render_mode="human")
 
     A2C.transition()
     print("finish training")
