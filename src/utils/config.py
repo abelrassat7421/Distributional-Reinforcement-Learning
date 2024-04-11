@@ -22,15 +22,15 @@ class Config:
         self.stop_explore = 50
 
         # neural network parameters
-        # self.weights_initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-2, seed=None)
-        # self.activity_regularizer = tf.keras.regularizers.l1_l2(1e-3, 1e-3)
-        self.network_optimizer = tf.keras.optimizers.Adam(lr=1e-4,  # learning rate
+        self.weights_initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=1e-2, seed=None)
+        self.activity_regularizer = tf.keras.regularizers.l1_l2(1e-3, 1e-3)
+        self.network_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-4,  # learning rate
                                                           clipnorm=1.0)  # gradient clipping
-        self.keras_checkpoint = [tf.keras.callbacks.ModelCheckpoint(
-            filepath='./results/saved_network_models/harvey.model',
-            save_weights_only=True, mode='auto'),
-            tf.keras.callbacks.EarlyStopping(patience=10, monitor='loss'),
-        ]
+        # self.keras_checkpoint = [tf.keras.callbacks.ModelCheckpoint(
+        #     filepath='./results/saved_network_models/harvey.model',
+        #     save_weights_only=True, mode='auto'),
+        #     tf.keras.callbacks.EarlyStopping(patience=10, monitor='loss'),
+        # ]
 
         # Categorical DQN parameters
         self.categorical_Vmin = 0
