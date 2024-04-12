@@ -125,14 +125,14 @@ class DQNAgent:
             self.check_model_improved = 0
 
             for step in range(self.steps):
-                action_values, _ = self.target_network.predict(
+                action_values = self.target_network.predict(
                     np.array(current_state).reshape((1, self.input_dim[0], self.input_dim[1])))
                 action = np.argmax(action_values.reshape(self.config.action_dim))
 
                 next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
 
                 if render:
-                    self.envs.render(mode=['human'])
+                    self.envs.render()
 
                 if done:
                     break

@@ -124,7 +124,7 @@ class A2Cagent:
                 next_state, reward, done, _, _ = self.envs.step(action=action) # Update of gym package
 
                 if render:
-                    self.envs.render(mode=['human'])
+                    self.envs.render()
 
                 if done:
                     break
