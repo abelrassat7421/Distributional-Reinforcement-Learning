@@ -25,7 +25,7 @@ class ExpectileNet:
     def nn_model(self):
         input_layer = Input(shape=self.input_dim, name='state_tensor_input')
         output_layers = Dense(units=24, activation="relu", name='hidden_layer_1')(input_layer)
-        output_layers = Dense(units=self.output_dim, activation="linear", name='output_layer')(output_layers) # TODO understand how the two output layers don't overwrite eachother
+        output_layers = Dense(units=self.output_dim, activation="linear", name='output_layer')(output_layers) 
 
         # processing layers ==> reshape, no training variables
         output_layers = Reshape((self.action_dim, self.num_expectiles))(output_layers)
@@ -54,7 +54,6 @@ class ExpectileNet:
         self.net_model.compile(
             loss=[None, self.expectile_regression_loss],  # apply loss function only to the second output
             optimizer=self.optimizer
-
         )
 
         self.net_model.summary()  # print out the network structure

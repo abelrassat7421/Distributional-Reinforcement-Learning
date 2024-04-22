@@ -52,7 +52,6 @@ class CategoricalNet:
         self.net_model.compile(
             loss=[None, 'categorical_crossentropy'],  # apply loss function only to the second output
             optimizer=self.optimizer
-
         )
 
         self.net_model.summary()  # print out the network structure

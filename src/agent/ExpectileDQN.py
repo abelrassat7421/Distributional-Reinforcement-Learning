@@ -40,6 +40,7 @@ class ExpectileDQNAgent:
         self.cum_density = np.linspace(0.01, 0.99, config.num_expectiles)
         self.imputation_method = config.imputation_method
 
+
     def transition(self):
         """
         In transition, the agent simply plays and records
@@ -99,6 +100,7 @@ class ExpectileDQNAgent:
             if self.check_model_improved > self.best_max:
                 self.best_max = self.check_model_improved
                 self.target_network.set_weights(self.actor_network.get_weights())
+
 
     def train_by_replay(self):
         """

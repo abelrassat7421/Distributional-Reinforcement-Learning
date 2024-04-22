@@ -1,6 +1,5 @@
 import numpy as np
-import tensorflow as tf
-
+import matplotlib.pyplot as plt
 
 # Environment
 n_states = 5
@@ -12,6 +11,7 @@ lr = 0.1  # Learning rate
 num_gamma = 50 # Number of gammas
 num_sensitivities = 10 # Number of sensitivities
 alpha = 0.1  # Regularization parameter - study its effects TODO 
+num_it = 10
 
 # Initialize the state value function V(s) with zeros for a simple environment with 5 states
 V = np.zeros((num_sensitivities, num_gamma, n_states))
@@ -19,7 +19,7 @@ V = np.zeros((num_sensitivities, num_gamma, n_states))
 # Going to have a buffer system -> check how it's implemented for the expectile code and how I can reuse this system? TODO
 # Example transitions (state, reward, next_state)
 # Assuming a small environment with 5 states and some transitions for illustration
-transitions = [(0, -1, 1), (1, -1, 2), (2, -1, 3), (3, -1, 4), (4, 0, 4)] # (current state, reward, next state)
+transitions = [(0, -2, 1), (0, 2, 1), (1, -2, 2), (1, 2, 2), (3, -1, 4), (3, 1, 4), (3, -1, 4), (4, 1, "done"), (4, -1, "done")] # (current state, reward, next state) # how  can I make an absorbing state?
 
 # Following theoretical results we want gammas to be equidistant in the 1/(log(gamma)) space
 start = 1 / np.log(0.01)  
@@ -32,16 +32,18 @@ sensitivities = np.linspace(reward_bounds[0], reward_bounds[1], num_sensitivitie
 # TD Learning with different discount factors and sensitivities (eq. 10)
 for h in sensitivities:
     for gamma_idx, gamma in enumerate(gammas):
-        for current_state, reward, next_state in transitions:
-            td_target = tf.math.sigmoid(reward - h) + gamma * V[h][gamma_idx][next_state] # could change to Heaviside step function NOTE
-            td_error = td_target - V[h][gamma_idx][current_state]
-            V[h][gamma_idx][current_state] += lr * td_error
-            # how do we check convergence? TODO
-            # how do we ensure that every state action pair is visited? -> you espilon greedy policy? TODO
-            print(f"Updated values: {V}")
+        for _ in range(num_it):
+            for current_state, reward, next_state in transitions:
+                td_target = tf.math.sigmoid(reward - h) + gamma * V[h][gamma_idx][next_state] # could change to Heaviside step function NOTE
+                td_error = td_target - V[h][gamma_idx][current_state]
+                V[h][gamma_idx][current_state] += lr * td_error
+                # how do we check convergence? TODO
+                # how do we ensure that every state action pair is visited? -> you espilon greedy policy? TODO
+                print(f"Updated values: {V}")
 
 # Final Value Function
-print("Final Value Function:", V)
+print("Final Value Function:", V, V.shape)
+#plt.plot( )
 
 
 # Translation-invariant Linear Decoder based Post's approximation to the inverse Laplace transform (inspiration from ref. 35)

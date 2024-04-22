@@ -1,5 +1,6 @@
 gym
-keras
+#keras
+pygame
 tensorflow
 scipy
 numpy
